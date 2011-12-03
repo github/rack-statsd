@@ -91,10 +91,12 @@ module RackMonitor
     # domain   - The String domain name the app runs in.
     # revision - The String SHA that describes the current version of code.
     # options  - Hash of options.
-    #            :window   - The Integer number of seconds before the horizon
-    #                        resets.
-    #            :stats    - Optional StatsD client.
-    #            :hostname - Optional String hostname.
+    #            :window       - The Integer number of seconds before the
+    #                            horizon resets.
+    #            :stats        - Optional StatsD client.
+    #            :hostname     - Optional String hostname.
+    #            :stats_prefix - Optional String prefix for StatsD keys.
+    #                            Default: "rack"
     def initialize(app, domain, revision, options = {})
       @app = app
       @domain = domain
@@ -109,6 +111,7 @@ module RackMonitor
 
       if @stats = options[:stats]
         @hostname = options[:hostname] || `hostname -s`.chomp
+        @stats_prefix = "#{options[:stats_prefix] || :rack}.#{@hostname}"
       end
     end
 
@@ -213,13 +216,13 @@ module RackMonitor
       $0 = procline
 
       if @stats
-        @stats.timing("unicorn.#{@hostname}.response_time", diff * 1000)
+        @stats.timing("#{@stats_prefix}.response_time", diff * 1000)
         if suffix = status_suffix(status)
-          @stats.increment "unicorn.#{Gitio.host}.status_code.#{status_suffix(status)}"
+          @stats.increment "#{@stats_prefix}.status_code.#{status_suffix(status)}"
         end
         if @track_gc && GC.time > 0
-          @stats.timing "unicorn.#{@hostname}.gc.time", GC.time / 1000
-          @stats.count  "unicorn.#{@hostname}.gc.collections", GC.collections
+          @stats.timing "#{@stats_prefix}.gc.time", GC.time / 1000
+          @stats.count  "#{@stats_prefix}.gc.collections", GC.collections
         end
       end
 
