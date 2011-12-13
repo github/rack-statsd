@@ -94,7 +94,8 @@ module RackMonitor
     #            :window       - The Integer number of seconds before the
     #                            horizon resets.
     #            :stats        - Optional StatsD client.
-    #            :hostname     - Optional String hostname.
+    #            :hostname     - Optional String hostname. Set to nil
+    #                            to exclude.
     #            :stats_prefix - Optional String prefix for StatsD keys.
     #                            Default: "rack"
     def initialize(app, domain, revision, options = {})
@@ -110,8 +111,13 @@ module RackMonitor
       @track_gc = GC.respond_to?(:time)
 
       if @stats = options[:stats]
-        @hostname = options[:hostname] || `hostname -s`.chomp
-        @stats_prefix = "#{options[:stats_prefix] || :rack}.#{@hostname}"
+        prefix = [options[:stats_prefix] || :rack]
+        if options.has_key?(:hostname)
+          prefix << options[:hostname] unless options[:hostname].nil?
+        else
+          prefix << `hostname -s`.chomp
+        end
+        @stats_prefix = prefix.join(".")
       end
     end
 
