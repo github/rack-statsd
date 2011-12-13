@@ -239,6 +239,8 @@ module RackMonitor
 
     def status_suffix(status)
       suffix = case status.to_i
+        when 400 then :bad_request
+        when 401 then :unauthorized
         when 404 then :missing
         when 422 then :invalid
         when 503 then :node_down
