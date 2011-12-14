@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   ## a custom homepage, consider using your GitHub URL or the like.
   s.authors  = ["Ryan Tomayko", "Rick Olson"]
   s.email    = 'technoweenie@gmail.com'
-  s.homepage = 'https://github.com/github/rack_monitor'
+  s.homepage = 'https://github.com/github/rack-statsd'
 
   ## This gets added to the $LOAD_PATH so that 'lib/NAME.rb' can be required as
   ## require 'NAME.rb' or'/lib/NAME/file.rb' can be as require 'NAME/file.rb'
