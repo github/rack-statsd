@@ -42,7 +42,7 @@ module RackStatsD
           if @callback.respond_to?(:call)
             return @callback.call
           else
-            return @callback
+            return [200, { }, @callback]
           end
         end
       end
