@@ -12,10 +12,10 @@ Gem::Specification.new do |s|
   ## Leave these as is they will be modified for you by the rake gemspec task.
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
-  s.name              = 'rack_monitor'
-  s.version           = '0.0.1'
-  s.date              = '2011-12-02'
-  s.rubyforge_project = 'rack_monitor'
+  s.name              = 'rack-statsd'
+  s.version           = '0.1.0'
+  s.date              = '2011-12-14'
+  s.rubyforge_project = 'rack-statsd'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
@@ -49,8 +49,8 @@ Gem::Specification.new do |s|
     LICENSE
     README.md
     Rakefile
-    lib/rack_monitor.rb
-    rack_monitor.gemspec
+    lib/rack-statsd.rb
+    rack-statsd.gemspec
   ]
   # = MANIFEST =
 
