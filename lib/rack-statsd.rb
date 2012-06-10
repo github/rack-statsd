@@ -82,6 +82,9 @@ module RackStatsD
   # NOTE This middleware is not thread safe. It should only be used when
   # rack.multiprocess is true and rack.multithread is false.
   class ProcessUtilization
+    REQUEST_METHOD = 'REQUEST_METHOD'.freeze
+    VALID_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'].freeze
+
     # Initializes the middleware.
     #
     # app      - The next Rack app in the pipeline.
@@ -210,7 +213,7 @@ module RackStatsD
 
     # called immediately after a request to record statistics, update the
     # procline, and dump information to the logfile
-    def record_request(status)
+    def record_request(status, env)
       now = Time.now
       diff = (now - @start)
       @active_time += diff
@@ -220,6 +223,11 @@ module RackStatsD
 
       if @stats
         @stats.timing("#{@stats_prefix}.response_time", diff * 1000)
+        if VALID_METHODS.include?(env[REQUEST_METHOD])
+          stat = "#{@stats_prefix}.response_time.#{env[REQUEST_METHOD].downcase}"
+          @stats.timing(stat, diff * 1000)
+        end
+
         if suffix = status_suffix(status)
           @stats.increment "#{@stats_prefix}.status_code.#{status_suffix(status)}"
         end
@@ -279,7 +287,7 @@ module RackStatsD
       env.delete('HTTP_X_REQUEST_START')
 
       status, headers, body = @app.call(env)
-      body = Body.new(body) { record_request(status) }
+      body = Body.new(body) { record_request(status, env) }
       [status, headers, body]
     end
   end
