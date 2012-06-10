@@ -220,9 +220,10 @@ module RackStatsD
 
       if @stats
         @stats.timing("#{@stats_prefix}.response_time", diff * 1000)
-        if suffix = status_suffix(status)
-          @stats.increment "#{@stats_prefix}.status_code.#{status_suffix(status)}"
-        end
+
+        @stats.increment "#{@stats_prefix}.status_code.#{status}"
+        @stats.increment "#{@stats_prefix}.status_class.#{status / 100}xx"
+
         if @track_gc && GC.time > 0
           @stats.timing "#{@stats_prefix}.gc.time", GC.time / 1000
           @stats.count  "#{@stats_prefix}.gc.collections", GC.collections
@@ -232,17 +233,6 @@ module RackStatsD
       reset_horizon if now - horizon > @window
     rescue => boom
       warn "ProcessUtilization#record_request failed: #{boom}"
-    end
-
-    def status_suffix(status)
-      suffix = case status.to_i
-        when 400 then :bad_request
-        when 401 then :unauthorized
-        when 404 then :missing
-        when 422 then :invalid
-        when 503 then :node_down
-        when 500 then :error
-      end
     end
 
     # Body wrapper. Yields to the block when body is closed. This is used to
