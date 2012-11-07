@@ -242,6 +242,7 @@ module RackStatsD
         when 422 then :invalid
         when 503 then :node_down
         when 500 then :error
+        when 200 then :success
       end
     end
 
