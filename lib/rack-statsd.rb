@@ -236,24 +236,26 @@ module RackStatsD
 
     def status_suffix(status)
       suffix = case status.to_i
-               when 200 then :ok
-               when 201 then :created
-               when 202 then :accepted
-               when 301 then :moved_permanently
-               when 302 then :found
-               when 303 then :see_other
-               when 304 then :not_modified
-               when 305 then :use_proxy
-               when 307 then :temporary_redirect
-               when 400 then :bad_request
-               when 401 then :unauthorized
-               when 402 then :payment_required
-               when 403 then :forbidden
-               when 404 then :missing
-               when 410 then :gone
-               when 422 then :invalid
-               when 503 then :node_down
-               when 500 then :error
+        when 200 then :ok
+        when 201 then :created
+        when 202 then :accepted
+        when 301 then :moved_permanently
+        when 302 then :found
+        when 303 then :see_other
+        when 304 then :not_modified
+        when 305 then :use_proxy
+        when 307 then :temporary_redirect
+        when 400 then :bad_request
+        when 401 then :unauthorized
+        when 402 then :payment_required
+        when 403 then :forbidden
+        when 404 then :missing
+        when 410 then :gone
+        when 422 then :invalid
+        when 500 then :error
+        when 502 then :bad_gateway
+        when 503 then :node_down
+        when 504 then :gateway_timeout
       end
     end
 
