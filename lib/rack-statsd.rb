@@ -7,6 +7,7 @@ module RackStatsD
     GET            = 'GET'.freeze
     PATH_INFO      = 'PATH_INFO'.freeze
     STATUS_PATH    = '/status'
+    HEADERS        = {"Content-Type" => "text/plain"}.freeze
 
     # Initializes the middleware.
     #
@@ -42,7 +43,7 @@ module RackStatsD
           if @callback.respond_to?(:call)
             return @callback.call
           else
-            return [200, {"Content-Type" => "text/plain"}, [@callback.to_s]]    
+            return [200, HEADERS, [@callback.to_s]]
           end
         end
       end
