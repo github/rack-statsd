@@ -39,8 +39,11 @@ module RackStatsD
     def call(env)
       if env[REQUEST_METHOD] == GET
         if env[PATH_INFO] == @status_path
-          method = @callback.respond_to?(:call) ? :call : :to_s
-          return [200, {}, @callback.send(method)]
+          if @callback.respond_to?(:call)
+            return @callback.call
+          else
+            return [200, {"Content-Type" => "text/plain"}, [@callback.to_s]]    
+          end
         end
       end
 
