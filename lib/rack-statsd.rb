@@ -1,5 +1,5 @@
 module RackStatsD
-  VERSION = "0.1.1"
+  VERSION = "0.2.0"
 
   # Simple middleware to add a quick status URL for tools like Nagios.
   class RequestStatus
