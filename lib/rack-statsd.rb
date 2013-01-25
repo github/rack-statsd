@@ -66,13 +66,13 @@ module RackStatsD
     # Returns nothing.
     def initialize(app, options = {})
       @app = app
-      @host = options[:host] || `hostname -s`.chomp
+      @host = options.key?(:host) ? options[:host] : `hostname -s`.chomp
       @sha = options[:revision] || '<none>'
     end
 
     def call(env)
       status, headers, body = @app.call(env)
-      headers['X-Node'] = @host
+      headers['X-Node'] = @host if @host
       headers['X-Revision'] = @sha
       [status, headers, body]
     end
