@@ -280,7 +280,11 @@ module RackStatsD
       end
 
       def each(&block)
-        @body.each(&block)
+        if @body.respond_to?(:each)
+          @body.each(&block)
+        else
+          block.call(@body)
+        end
       end
 
       def close
