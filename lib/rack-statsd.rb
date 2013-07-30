@@ -226,19 +226,30 @@ module RackStatsD
       $0 = procline
 
       if @stats
-        @stats.timing("#{@stats_prefix}.response_time", diff * 1000)
+        payload = {
+          :domain => domain,
+          :revision => revision,
+          :worker_number => worker_number.to_i,
+          :total_requests => total_requests.to_i,
+          :requests_per_second => requests_per_second.to_f,
+          :average_response_time => average_response_time.to_i,
+          :percentage_active => percentage_active.to_f,
+          :stats_prefix => @stats_prefix,
+          :response_time => diff * 1000
+        }
         if VALID_METHODS.include?(env[REQUEST_METHOD])
-          stat = "#{@stats_prefix}.response_time.#{env[REQUEST_METHOD].downcase}"
-          @stats.timing(stat, diff * 1000)
+          payload["response_time.#{env[REQUEST_METHOD].downcase}"] = diff * 1000
         end
 
         if suffix = status_suffix(status)
-          @stats.increment "#{@stats_prefix}.status_code.#{status_suffix(status)}"
+          payload[:status_code] = status_suffix(status)
         end
         if @track_gc && GC.time > 0
-          @stats.timing "#{@stats_prefix}.gc.time", GC.time / 1000
-          @stats.count  "#{@stats_prefix}.gc.collections", GC.collections
+          payload[:gc_time] = GC.time / 1000
+          payload[:gc_collections] = GC.collections
         end
+
+        ActiveSupport::Notifications.instrument("record_request.ProcessUtilization", payload)
       end
 
       reset_horizon if now - horizon > @window
