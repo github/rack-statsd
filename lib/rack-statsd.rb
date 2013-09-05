@@ -7,7 +7,7 @@ module RackStatsD
     GET            = 'GET'.freeze
     PATH_INFO      = 'PATH_INFO'.freeze
     STATUS_PATH    = '/status'
-    HEADERS        = {"Content-Type" => "text/plain"}.freeze
+    HEADERS        = {"Content-Type" => "text/plain"}
 
     # Initializes the middleware.
     #
